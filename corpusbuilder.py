@@ -58,7 +58,7 @@ def pull_from_reddit():
         output = []
         for sub in subs:
             subreddit = reddit.subreddit(sub)
-            for submission in subreddit.hot(limit=10):
+            for submission in subreddit.hot(limit=50):
                 if submission.id not in checked:
                     # check on ups not implemented as pulling from .hot
                     # if submission.ups > somelimit

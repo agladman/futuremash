@@ -38,6 +38,5 @@ def test_output():
 
 
 if __name__ == '__main__':
-    # Build the model.
     text_model = build_model()
     test_output()
