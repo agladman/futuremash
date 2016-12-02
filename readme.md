@@ -12,8 +12,12 @@ At the moment output is just send to the command line, as the corpus is not yet 
 - Think about a way of adding images to some tweets at some point.
 - Explore hosting so the bot can be automated and run via cron jobs.
 - Extend corpusbuilder.py to take in material from Twitter feeds.
+- Log sent tweets to the bot doesn't repeat itself
 
-## All the fake tech news that's fit to print to stdout
+### All the fake tech news that's fit to print to stdout
 Here are some early favourites that have come up during testing:
-- Wearable device for tablets.
+
 - Twitter says it will ban diesel vehicles by 2025.
+- Charging Your Phone in Seconds and the GOP may be caused by gut bacteria.
+- Relax, artificial intelligence isn’t coming for your 2016 MacBook Pro?
+- Wearable device for tablets.

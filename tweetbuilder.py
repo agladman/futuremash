@@ -26,15 +26,17 @@ def build_model():
 
 
 def test_output():
-    # Print five randomly-generated sentences
-    print('\n===== 5 sentences =====\n')
-    for i in range(5):
-        print(text_model.make_sentence())
-
-    # Print three randomly-generated sentences of no more than 140 characters
-    print('\n===== 3 short sentences =====\n')
-    for i in range(3):
-        print(text_model.make_short_sentence(140))
+    """prints 10 unqiue randomly-generated sentences of no more than 140
+        characters
+        """
+    output = []
+    while len(output) < 10:
+        s = text_model.make_short_sentence(140)
+        if s not in output:
+            output.append(s)
+    print('\n')
+    for s in output:
+        print(s)
 
 
 if __name__ == '__main__':
