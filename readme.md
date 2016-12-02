@@ -1,3 +1,5 @@
 # Gadgetech 
 A project to create a simple Twitter bot that uses Markov chains to generate tech news headlines.
-There will be two main components: corpusbuilder.py will use PRAW to scrape headlines from various related subreddits and tweetbuilder.py will use the Markovify library to build the tweets and the Twitter API (plus maybe Twython) to send them out into the world.
+There are be two main components: corpusbuilder.py uses PRAW to scrape headlines from various related subreddits and tweetbuilder.py uses the Markovify library to build the tweets.
+At the moment output is just send to the command line, as the corpus is not yet large enough to build statisying sentences. Once this improves, tweetbuilder.py will use the Twitter API (plus/or maybe Twython) to send them out into the world.
+I may think about a way of adding images to some tweets at some point.
