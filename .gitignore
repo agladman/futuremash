@@ -1,6 +1,7 @@
 # Project specific files #
 ########################## 
 /corpus/
+/config/
 
 # Compiled source #
 ###################
