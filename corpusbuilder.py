@@ -8,7 +8,9 @@
 
 import os
 import praw
+import re
 import time
+from twython import Twython
 import uuid
 import yaml
 
@@ -28,6 +30,15 @@ if cfg:
     my_password = cfg['reddit']['my_password']
     corpus_age_limit = cfg['age']['corpus_age_limit_days']
     subs = cfg['subreddits']
+    APP_KEY = cfg['twitter']['app_key']
+    APP_SECRET = cfg['twitter']['app_key_secret']
+    OAUTH_TOKEN = cfg['twitter']['access_token']
+    OAUTH_TOKEN_SECRET = cfg['twitter']['access_token_secret']
+
+twitter = Twython(APP_KEY, APP_SECRET,
+                  OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+
+twitter.verify_credentials()
 
 reddit = praw.Reddit(user_agent=my_user_agent,
                      client_id=my_client_id,
@@ -53,7 +64,7 @@ def corpus_age_limit_to_seconds():
 
 
 def pull_from_reddit():
-    with open('config/checked.txt', 'r') as f:
+    with open('config/checked_reddit.txt', 'r') as f:
         checked = f.read().splitlines()
         output = []
         for sub in subs:
@@ -71,7 +82,31 @@ def pull_from_reddit():
         with open('corpus/{0}'.format(output_filename), 'a') as f:
             for item in output:
                 f.write(item + '\n')
-    with open('config/checked.txt', 'a') as f:
+    with open('config/checked_reddit.txt', 'a') as f:
+        for item in checked:
+            f.write(item + '\n')
+
+
+def pull_from_twitter():
+    with open('config/checked_twitter.txt', 'r') as f:
+        checked = f.read().splitlines()
+        output = []
+        tweets = twitter.get_home_timeline()
+        for t in tweets:
+            if t['id_str'] not in checked:
+                if not t['in_reply_to_status_id']:
+                    tweet = t['text']
+                    result = re.sub(r'http\S+', '', tweet)
+                    output.append(result)
+                    checked.append(t['id_str'])
+    if len(output) == 0:
+        print('No new submissions found')
+    else:
+        output_filename = '{0}.txt'.format(uuid.uuid4().hex)
+        with open('corpus/{0}'.format(output_filename), 'a') as f:
+            for item in output:
+                f.write(item + '\n')
+    with open('config/checked_twitter.txt', 'a') as f:
         for item in checked:
             f.write(item + '\n')
 
@@ -79,3 +114,4 @@ def pull_from_reddit():
 if __name__ == '__main__':
     clean_corpus()
     pull_from_reddit()
+    pull_from_twitter()
