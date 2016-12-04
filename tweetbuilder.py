@@ -29,14 +29,21 @@ def test_output():
     """prints 10 unqiue randomly-generated sentences of no more than 140
         characters
         """
+    with open('config/output_log.txt', 'r') as f:
+        logged = f.read().splitlines()
     output = []
     while len(output) < 10:
         s = text_model.make_short_sentence(140)
         if s not in output:
             output.append(s)
     print('\n')
-    for s in output:
-        print(s)
+    for i, s in enumerate(output):
+        if s not in logged:
+            logged.append(s)
+            print(i, s)
+    with open('config/output_log.txt', 'a') as f:
+        for item in logged:
+            f.write(item + '\n')
 
 
 if __name__ == '__main__':
