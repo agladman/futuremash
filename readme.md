@@ -45,8 +45,7 @@ subreddits:
 ## Development plans
 - Think about a way of adding images to some tweets at some point.
 - Explore hosting so the bot can be automated and run via cron jobs.
-- Log sent tweets so the bot doesn't repeat itself
-- Control growth of congig files checked_reddit.txt and checked_titter.txt.
+- Control growth of config files checked_reddit.txt,  checked_titter.txt and output_log.txt.
 - Set up logging.
 
 ### All the fake tech news that's fit to print to stdout
@@ -56,3 +55,4 @@ Here are some early favourites that have come up during testing:
 - Charging Your Phone in Seconds and the GOP may be caused by gut bacteria.
 - Relax, artificial intelligence isn’t coming for your 2016 MacBook Pro?
 - Wearable device for tablets.
+- AI learns to predict the future of government?
