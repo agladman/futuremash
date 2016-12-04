@@ -52,7 +52,5 @@ subreddits:
 Here are some early favourites that have come up during testing:
 
 - Twitter says it will ban diesel vehicles by 2025.
-- Charging Your Phone in Seconds and the GOP may be caused by gut bacteria.
-- Relax, artificial intelligence isn’t coming for your 2016 MacBook Pro?
-- Wearable device for tablets.
+- Analysts predict Canada could have the stamina.
 - AI learns to predict the future of government?

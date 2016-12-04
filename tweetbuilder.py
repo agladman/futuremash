@@ -37,12 +37,13 @@ def test_output():
         if s not in output:
             output.append(s)
     print('\n')
+    new_to_log = []
     for i, s in enumerate(output):
         if s not in logged:
-            logged.append(s)
+            new_to_log.append(s)
             print(i, s)
     with open('config/output_log.txt', 'a') as f:
-        for item in logged:
+        for item in new_to_log:
             f.write(item + '\n')
 
 
