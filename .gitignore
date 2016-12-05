@@ -1,7 +1,9 @@
-# Project specific files #
+# Project specific files and paths #
 ########################## 
 /corpus/
 /config/
+/logs/
+/helpers/
 
 # Compiled source #
 ###################

@@ -6,6 +6,7 @@
     """
 
 
+import logging.config
 import os
 import praw
 import re
@@ -15,12 +16,16 @@ import uuid
 import yaml
 
 
+log_cfg = yaml.load(open('config/logging.yml', 'r'))
+logging.config.dictConfig(log_cfg)
+logger = logging.getLogger(__name__)
+
 # read from config file and set variables
 with open('config/config.yml', 'r') as f:
     try:
         cfg = yaml.load(f)
     except yaml.YAMLError as exc:
-        print(exc)
+        logging.error(exc)
 
 if cfg:
     my_user_agent = cfg['reddit']['my_user_agent']
@@ -34,6 +39,7 @@ if cfg:
     APP_SECRET = cfg['twitter']['app_key_secret']
     OAUTH_TOKEN = cfg['twitter']['access_token']
     OAUTH_TOKEN_SECRET = cfg['twitter']['access_token_secret']
+    logging.debug('loaded config')
 
 twitter = Twython(APP_KEY, APP_SECRET,
                   OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
@@ -50,12 +56,14 @@ reddit = praw.Reddit(user_agent=my_user_agent,
 def clean_corpus():
     path = 'corpus/'
     paths = [os.path.join(path, fname) for fname in os.listdir(path)]
+    logging.debug('found {0} files in corpus'.format(len(paths)))
     for file in paths:
         m = os.path.getctime(file)  # could try os.path.getmtime()
         now = time.time()
         limit = now - corpus_age_limit_to_seconds()
         if m < limit:
             os.remove(file)
+            logging.debug('removed {0} from corpus'.format(file))
 
 
 def corpus_age_limit_to_seconds():
@@ -64,7 +72,7 @@ def corpus_age_limit_to_seconds():
 
 
 def pull_from_reddit():
-    with open('config/checked_reddit.txt', 'r') as f:
+    with open('logs/checked_reddit.txt', 'r') as f:
         checked = f.read().splitlines()
         output = []
         for sub in subs:
@@ -77,18 +85,21 @@ def pull_from_reddit():
                     checked.append(submission.id)
     if len(output) == 0:
         print('No new submissions found')
+        logging.info('no new submissions found')
     else:
+        logging.info('found {0} submissions'.format(len(output)))
         output_filename = '{0}.txt'.format(uuid.uuid4().hex)
+        logging.info('saving to {0}'.format(output_filename))
         with open('corpus/{0}'.format(output_filename), 'a') as f:
             for item in output:
                 f.write(item + '\n')
-    with open('config/checked_reddit.txt', 'a') as f:
+    with open('logs/checked_reddit.txt', 'a') as f:
         for item in checked:
             f.write(item + '\n')
 
 
 def pull_from_twitter():
-    with open('config/checked_twitter.txt', 'r') as f:
+    with open('logs/checked_twitter.txt', 'r') as f:
         checked = f.read().splitlines()
         output = []
         tweets = twitter.get_home_timeline()
@@ -101,17 +112,22 @@ def pull_from_twitter():
                     checked.append(t['id_str'])
     if len(output) == 0:
         print('No new submissions found')
+        logging.info('no new submissions found')
     else:
+        logging.info('found {0} submissions'.format(len(output)))
         output_filename = '{0}.txt'.format(uuid.uuid4().hex)
+        logging.info('saving to {0}'.format(output_filename))
         with open('corpus/{0}'.format(output_filename), 'a') as f:
             for item in output:
                 f.write(item + '\n')
-    with open('config/checked_twitter.txt', 'a') as f:
+    with open('logs/checked_twitter.txt', 'a') as f:
         for item in checked:
             f.write(item + '\n')
 
 
 if __name__ == '__main__':
+    logging.info('start')
     clean_corpus()
     pull_from_reddit()
     pull_from_twitter()
+    logging.info('finish')
