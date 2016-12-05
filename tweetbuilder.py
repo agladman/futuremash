@@ -17,6 +17,18 @@ logging.config.dictConfig(log_cfg)
 logger = logging.getLogger(__name__)
 
 
+def build_model_alternate():
+    all_text = ''
+    path = 'corpus/'
+    for i in os.listdir(path):
+        with open(path + i) as f:
+            all_text += f.read()
+    logging.debug('all_text: {0}'.format(all_text))
+    model = markovify.Text(all_text)
+    logging.info('created text model')
+    return model
+
+
 def build_model():
     """builds the text model from files in the corpus folder"""
     submodels = []
@@ -26,16 +38,23 @@ def build_model():
         if file.endswith('.txt'):   # filter for OS junk like .DS_Store
             with open(file, 'r') as f:
                 text = f.read()
+                logging.debug('reading {0}'.format(file))
+                logging.debug('type passed to corpus: {0}'.format(type(text)))
+                logging.debug('text: {0}'.format(text))
                 try:
                     i = markovify.Text(text)
                     submodels.append(i)
-                except Exception as e:
+                except Exception:
                     logging.exception('exception creating submodel: ')
-                    raise e
+                    pass
     logging.info('created {0} submodels'.format(len(submodels)))
-    model = markovify.combine(submodels)
-    logging.info('created combined model')
-    return model
+    if len(submodels) > 0:
+        model = markovify.combine(submodels)
+        logging.info('created combined model')
+        return model
+    else:
+        logging.error('unable to create text model')
+        return False
 
 
 def test_output():
@@ -63,5 +82,8 @@ def test_output():
 if __name__ == '__main__':
     logging.info('start')
     text_model = build_model()
-    test_output()
+    if text_model:
+        test_output()
+    else:
+        print('I have nothing to say right now.')
     logging.info('finish')
