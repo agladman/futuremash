@@ -17,20 +17,21 @@ logging.config.dictConfig(log_cfg)
 logger = logging.getLogger(__name__)
 
 
-def build_model_alternate():
-    all_text = ''
-    path = 'corpus/'
-    for i in os.listdir(path):
-        with open(path + i) as f:
-            all_text += f.read()
-    logging.debug('all_text: {0}'.format(all_text))
-    model = markovify.Text(all_text)
-    logging.info('created text model')
-    return model
+def main():
+    logger.info('start')
+    text_model = build_model()
+    if text_model:
+        test_output(text_model)
+    else:
+        print('I have nothing to say right now.')
+    logger.info('finish')
 
 
 def build_model():
-    """builds the text model from files in the corpus folder"""
+    """Builds the text model from files in the corpus folder by looping
+        over all files and creating a submodel for each file and finally
+        combining these into one.
+        """
     submodels = []
     path = 'corpus/'
     files = [os.path.join(path, fname) for fname in os.listdir(path)]
@@ -46,44 +47,43 @@ def build_model():
                     submodels.append(i)
                 except Exception:
                     logging.exception('exception creating submodel: ')
+                    # TODO: automatically move files that throw
+                    # UnicodeDecodeError to another dir
                     pass
-    logging.info('created {0} submodels'.format(len(submodels)))
+    logger.info('created {0} submodels'.format(len(submodels)))
     if len(submodels) > 0:
         model = markovify.combine(submodels)
-        logging.info('created combined model')
+        logger.info('created combined model')
         return model
     else:
-        logging.error('unable to create text model')
+        logger.error('unable to create text model')
         return False
 
 
-def test_output():
-    """outputs 10 unqiue randomly-generated sentences of no more than 140
-        characters
+def build_tweet(text_model, length=140):
+    return text_model.make_short_sentence(length)
+
+
+def test_output(text_model):
+    """Outputs 10 unqiue randomly-generated sentences of no more than 140
+        characters.
         """
     with open('logs/output_log.txt', 'r') as f:
         logged = f.read().splitlines()
     output = []
     while len(output) < 10:
-        s = text_model.make_short_sentence(140)
+        s = build_tweet(text_model, 120)
         if s not in output:
             output.append(s)
     print('\n')
-    new_to_log = []
     for i, s in enumerate(output):
         if s not in logged:
-            new_to_log.append(s)
+            logged.append(s)
             print(i, s)
-    with open('logs/output_log.txt', 'a') as f:
-        for item in new_to_log:
+    with open('logs/output_log.txt', 'w') as f:
+        for item in logged:
             f.write(item + '\n')
 
 
 if __name__ == '__main__':
-    logging.info('start')
-    text_model = build_model()
-    if text_model:
-        test_output()
-    else:
-        print('I have nothing to say right now.')
-    logging.info('finish')
+    main()

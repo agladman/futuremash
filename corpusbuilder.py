@@ -25,7 +25,7 @@ with open('config/config.yml', 'r') as f:
     try:
         cfg = yaml.load(f)
     except yaml.YAMLError as exc:
-        logging.error(exc)
+        logger.error(exc)
 
 if cfg:
     my_user_agent = cfg['reddit']['my_user_agent']
@@ -34,12 +34,13 @@ if cfg:
     my_username = cfg['reddit']['my_username']
     my_password = cfg['reddit']['my_password']
     corpus_age_limit = cfg['age']['corpus_age_limit_days']
+    checked_logs_age_limit = cfg['age']['checked_logs_age_limit_days']
     subs = cfg['subreddits']
     APP_KEY = cfg['twitter']['app_key']
     APP_SECRET = cfg['twitter']['app_key_secret']
     OAUTH_TOKEN = cfg['twitter']['access_token']
     OAUTH_TOKEN_SECRET = cfg['twitter']['access_token_secret']
-    logging.debug('loaded config')
+    logger.debug('loaded config')
 
 twitter = Twython(APP_KEY, APP_SECRET,
                   OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
@@ -53,22 +54,55 @@ reddit = praw.Reddit(user_agent=my_user_agent,
                      password=my_password)
 
 
+def main():
+    logger.info('start')
+    clean_corpus()
+    clean_logs()
+    pull_from_reddit()
+    pull_from_twitter()
+    logger.info('finish')
+
+
+def touch(path):
+    with open(path, 'a'):
+        os.utime(path, None)
+
+
+def corpus_age_limit_to_seconds():
+    x = 60 * 60 * 24 * corpus_age_limit
+    return x
+
+
+def checked_log_age_limit_to_seconds():
+    x = 60 * 60 * 24 * checked_logs_age_limit
+    return x
+
+
 def clean_corpus():
     path = 'corpus/'
     paths = [os.path.join(path, fname) for fname in os.listdir(path)]
-    logging.debug('found {0} files in corpus'.format(len(paths)))
+    logger.debug('found {0} files in corpus'.format(len(paths)))
     for file in paths:
         m = os.path.getctime(file)  # could try os.path.getmtime()
         now = time.time()
         limit = now - corpus_age_limit_to_seconds()
         if m < limit:
             os.remove(file)
-            logging.debug('removed {0} from corpus'.format(file))
+            logger.debug('removed {0} from corpus'.format(file))
 
 
-def corpus_age_limit_to_seconds():
-    x = 60 * 60 * 24 * corpus_age_limit
-    return x
+def clean_logs():
+    path = 'logs/'
+    files = ['checked_reddit.txt', 'checked_twitter.txt']
+    paths = [os.path.join(path, fname) for fname in files]
+    for file in paths:
+        m = os.path.getctime(file)  # could try os.path.getmtime()
+        now = time.time()
+        limit = now - checked_log_age_limit_to_seconds()
+        if m < limit:
+            os.remove(file)
+            os.touch(file)
+            logger.debug('refreshed {0}'.format(file))
 
 
 def pull_from_reddit():
@@ -85,15 +119,15 @@ def pull_from_reddit():
                     checked.append(submission.id)
     if len(output) == 0:
         print('No new submissions found')
-        logging.info('no new submissions found')
+        logger.info('no new submissions found')
     else:
-        logging.info('found {0} submissions'.format(len(output)))
+        logger.info('found {0} submissions'.format(len(output)))
         output_filename = '{0}.txt'.format(uuid.uuid4().hex)
-        logging.info('saving to {0}'.format(output_filename))
+        logger.info('saving to {0}'.format(output_filename))
         with open('corpus/{0}'.format(output_filename), 'a') as f:
             for item in output:
                 f.write(item + '\n')
-    with open('logs/checked_reddit.txt', 'a') as f:
+    with open('logs/checked_reddit.txt', 'w') as f:
         for item in checked:
             f.write(item + '\n')
 
@@ -112,22 +146,18 @@ def pull_from_twitter():
                     checked.append(t['id_str'])
     if len(output) == 0:
         print('No new submissions found')
-        logging.info('no new submissions found')
+        logger.info('no new submissions found')
     else:
-        logging.info('found {0} submissions'.format(len(output)))
+        logger.info('found {0} submissions'.format(len(output)))
         output_filename = '{0}.txt'.format(uuid.uuid4().hex)
-        logging.info('saving to {0}'.format(output_filename))
+        logger.info('saving to {0}'.format(output_filename))
         with open('corpus/{0}'.format(output_filename), 'a') as f:
             for item in output:
                 f.write(item + '\n')
-    with open('logs/checked_twitter.txt', 'a') as f:
+    with open('logs/checked_twitter.txt', 'w') as f:
         for item in checked:
             f.write(item + '\n')
 
 
 if __name__ == '__main__':
-    logging.info('start')
-    clean_corpus()
-    pull_from_reddit()
-    pull_from_twitter()
-    logging.info('finish')
+    main()

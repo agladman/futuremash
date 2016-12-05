@@ -46,6 +46,8 @@ subreddits:
 - Think about a way of adding images to some tweets at some point.
 - Explore hosting so the bot can be automated and run via cron jobs.
 - Control growth of config files checked_reddit.txt,  checked_twitter.txt and output_log.txt.
+- Improve output with NLTK?
+- Document dependencies.
 
 ### All the fake tech news that's fit to print to stdout
 Here are some early favourites that have come up during testing:
@@ -53,3 +55,4 @@ Here are some early favourites that have come up during testing:
 - Twitter says it will ban diesel vehicles by 2025.
 - Analysts predict Canada could have the stamina.
 - AI learns to predict the future of government?
+- The tech enabling a man rescuing a teeny kitten that wandered into traffic
