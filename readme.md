@@ -1,4 +1,4 @@
-# Gadgetech 
+# Futuremash 
 A project to create a simple Twitter bot that uses Markov chains to generate fake tech news headlines.
 
 ## Main components
@@ -11,8 +11,8 @@ This script uses the Markovify library to build the tweets from the files in the
 
 At the moment output is just send to the command line, as the corpus is not yet large enough to build statisying sentences. Once this improves, tweetbuilder.py will use the Twitter API (via Twython) to send them out into the world.
 
-## Configuring Gadgetech
-The scripts that make up Gadgetech are built to read some configuration details from a file called `config.yml` which sits inside a `config` directory. It should be structured as follows:
+## Configuration
+The scripts that make up Futuremash are built to read some configuration details from a file called `config.yml` which sits inside a `config` directory. It should be structured as follows:
 
 
 ```
@@ -45,8 +45,7 @@ subreddits:
 ## Development plans
 - Think about a way of adding images to some tweets at some point.
 - Explore hosting so the bot can be automated and run via cron jobs.
-- Control growth of config files checked_reddit.txt,  checked_titter.txt and output_log.txt.
-- Set up logging.
+- Control growth of config files checked_reddit.txt,  checked_twitter.txt and output_log.txt.
 
 ### All the fake tech news that's fit to print to stdout
 Here are some early favourites that have come up during testing:
