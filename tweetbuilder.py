@@ -21,15 +21,14 @@ logger = logging.getLogger(__name__)
 
 class Tweeter(object):
     """docstring for Tweeter"""
-    def __init__(self, name):
+    def __init__(self):
         super(Tweeter, self).__init__()
-        self.name = name
         self.APP_KEY = None
         self.APP_SECRET = None
         self.OAUTH_TOKEN = None
         self.OAUTH_TOKEN_SECRET = None
         self.tweet_length = 140
-        self.config(self)
+        self.config()
         self.twitter = Twython(self.APP_KEY,
                                self.APP_SECRET,
                                self.OAUTH_TOKEN,
@@ -38,7 +37,7 @@ class Tweeter(object):
 
     def config(self):
         # read from config file and set variables
-        with open('config.yml', 'r') as f:
+        with open('config/config.yml', 'r') as f:
             try:
                 cfg = yaml.load(f)
             except yaml.YAMLError as exc:
