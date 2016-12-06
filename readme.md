@@ -27,3 +27,5 @@ Here are some early favourites that have come up during testing:
 - The tech enabling a man rescuing a teeny kitten that wandered into traffic
 - I just got real.
 - The hybrid Slice Planner gives you the best way of doing zero g experiments.
+- The ‘just walk out technology’ of Amazon Go store bills everything to your posterior!
+- Scientists from Singapore have developed a new generation of supersonic jets.
