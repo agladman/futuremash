@@ -14,7 +14,7 @@ At the moment output is just send to the command line, as the corpus is not yet 
 ## Development plans
 - Explore hosting so the bot can be automated and run via cron jobs.
 - Improve output with NLTK?
-- Document dependencies.
+- All the testing.
 
 ### All the fake tech news that's fit to print to stdout
 Here are some early favourites that have come up during testing:
@@ -24,6 +24,4 @@ Here are some early favourites that have come up during testing:
 - AI learns to predict the future of government?
 - The tech enabling a man rescuing a teeny kitten that wandered into traffic
 - I just got real.
-
-<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The hybrid Slice Planner gives you the best way of doing zero g experiments.</p>&mdash; futuremash (@futuremash) <a href="https://twitter.com/futuremash/status/806099843613597696">December 6, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+- The hybrid Slice Planner gives you the best way of doing zero g experiments.

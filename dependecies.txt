@@ -1,0 +1,4 @@
+markovify (0.4.3)
+praw (4.0.0)
+twython (3.4.0)
+PyYAML (3.12)

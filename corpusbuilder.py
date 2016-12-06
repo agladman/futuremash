@@ -7,6 +7,7 @@
 
 
 import logging.config
+import markovify
 import os
 import praw
 import re
@@ -62,6 +63,7 @@ def main():
     clean_logs()
     pull_from_reddit()
     pull_from_twitter()
+    mover(test_for_markov())
     logger.info('finish')
 
 
@@ -197,6 +199,42 @@ def pull_from_twitter():
     with open('logs/checked_twitter.txt', 'w') as f:
         for item in checked:
             f.write(item + '\n')
+
+
+def test_for_markov():
+    """Loops over files in the corpus dir and identifies any that do not
+        pass through the markovify.text() method.
+        """
+    path = 'corpus/'
+    problems = []
+    logger.debug('files in corpus dir: {0}'.format(
+        len(os.listdir(path))))
+    for i in os.listdir(path):
+        logger.debug(i)
+        with open(path + i) as f:
+            m = None
+            try:
+                m = markovify.Text(f.read())
+                if m:
+                    logger.debug('OK')
+            except Exception:
+                logger.exception('EXCEPTION: ')
+                pass
+            finally:
+                if not m:
+                    problems.append((path, i))
+                pass
+    return problems
+
+
+def mover(file_list):
+    """Moves listed files out of the corpus dir"""
+    if len(file_list) > 0:
+        newpath = 'helpers/txt/'
+        for path, fname in file_list:
+            os.rename(path + fname, newpath + fname)
+    else:
+        logger.info('No errors found')
 
 
 if __name__ == '__main__':
