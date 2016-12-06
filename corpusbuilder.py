@@ -10,6 +10,7 @@ import logging.config
 import os
 import praw
 import re
+import requests
 import time
 from twython import Twython
 import uuid
@@ -40,6 +41,7 @@ if cfg:
     APP_SECRET = cfg['twitter']['app_key_secret']
     OAUTH_TOKEN = cfg['twitter']['access_token']
     OAUTH_TOKEN_SECRET = cfg['twitter']['access_token_secret']
+    jpg_limit = cfg['media']['max_jpg_store']
     logger.debug('loaded config')
 
 twitter = Twython(APP_KEY, APP_SECRET,
@@ -132,11 +134,48 @@ def pull_from_reddit():
             f.write(item + '\n')
 
 
+def capture_media_urls(tweets):
+    media_files = []
+    for status in tweets:
+        try:
+            media = status['extended_entities']['media'][0]['media_url']
+            media_files.append(media)
+            logger.debug('captured {0}'.format(media))
+        except KeyError:
+            logger.exception('error fetching media_url from tweet')
+            pass
+    return media_files
+
+
+def clean_media():
+    path = 'media/'
+    paths = [os.path.join(path, fname) for fname in os.listdir(path)]
+    if len(paths) > jpg_limit:
+        paths.sort(key=os.path.getctime)
+        # oldest = paths[0]; newest = paths[-1]
+        os.remove(paths[0])
+
+
+def download_images(media_files):
+    """Need to either filter for .jpgs or capture and use file extension
+        for each file this loops over. Even then filtering needed to
+        remove non-image media.
+        """
+    for media_file in media_files:
+        if media_file.endswith('.jpg'):
+            image_filename = 'media/{0}.jpg'.format(uuid.uuid4().hex)
+            clean_media()
+            with open(image_filename, 'wb') as f:
+                f.write(requests.get(media_file).content)
+
+
 def pull_from_twitter():
     with open('logs/checked_twitter.txt', 'r') as f:
         checked = f.read().splitlines()
         output = []
         tweets = twitter.get_home_timeline()
+        logger.debug(tweets)
+        jpgs = capture_media_urls(tweets)
         for t in tweets:
             if t['id_str'] not in checked:
                 if not t['in_reply_to_status_id']:
@@ -151,6 +190,7 @@ def pull_from_twitter():
         logger.info('found {0} submissions'.format(len(output)))
         output_filename = '{0}.txt'.format(uuid.uuid4().hex)
         logger.info('saving to {0}'.format(output_filename))
+        download_images(jpgs)
         with open('corpus/{0}'.format(output_filename), 'a') as f:
             for item in output:
                 f.write(item + '\n')
