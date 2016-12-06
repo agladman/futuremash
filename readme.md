@@ -14,7 +14,9 @@ At the moment output is just send to the command line, as the corpus is not yet 
 ## Development plans
 - Explore hosting so the bot can be automated and run via cron jobs.
 - Improve output with NLTK?
+- Change relative paths to absolute paths.
 - All the testing.
+- Documentation, probably.
 
 ### All the fake tech news that's fit to print to stdout
 Here are some early favourites that have come up during testing:
