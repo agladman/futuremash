@@ -3,6 +3,7 @@ corpus/
 config/config.yml
 logs/
 helpers/
+qt.py
 
 # Media
 *.jpg
