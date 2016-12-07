@@ -52,4 +52,4 @@ if __name__ == '__main__':
         main()
     except ConnectionResetError:
         logger.exception('worker.py stopped: ')
-        pass  
+        pass

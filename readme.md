@@ -19,7 +19,7 @@ At the moment output is just send to the command line, as the corpus is not yet 
 - Documentation, probably.
 
 ### All the fake tech news that's fit to print to stdout
-Here are some early favourites that have come up during testing:
+Here are some early favourites that came up during testing but didn't make it to Twitter:
 
 - Twitter says it will ban diesel vehicles by 2025.
 - Analysts predict Canada could have the stamina.
@@ -29,3 +29,6 @@ Here are some early favourites that have come up during testing:
 - The hybrid Slice Planner gives you the best way of doing zero g experiments.
 - The ‘just walk out technology’ of Amazon Go store bills everything to your posterior!
 - Scientists from Singapore have developed a new generation of supersonic jets.
+- Panasonic to launch megaphone that can help those dealing with anxiety!
+- Is Apple ever going to be 100% automated?
+- Google DeepMind could invent the next four years.
