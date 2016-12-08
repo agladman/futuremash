@@ -12,11 +12,10 @@ This script uses the Markovify library to build the tweets from the files in the
 At the moment output is just send to the command line, as the corpus is not yet large enough to build statisying sentences. Once this improves, tweetbuilder.py will use the Twitter API (via Twython) to send them out into the world.
 
 ## Development plans
-- Explore hosting so the bot can be automated and run via cron jobs.
-- Improve output with NLTK?
 - Change relative paths to absolute paths.
 - All the testing.
 - Documentation, probably.
+- Prepare for deployment to hosted platform.
 
 ### All the fake tech news that's fit to print to stdout
 Here are some early favourites that came up during testing but didn't make it to Twitter:
