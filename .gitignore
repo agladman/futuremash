@@ -1,9 +1,9 @@
 # My project specific files and paths
-corpus/
-config/config.yml
-logs/
-helpers/
-qt.py
+futuremash/corpus/
+futuremash/config/config.yml
+futuremash/logs/
+futuremash/helpers/
+futuremash/qt.py
 
 # Media
 *.jpg

@@ -73,6 +73,15 @@ def touch(path):
 
 
 def age_limit_to_seconds(my_int=120):
+    """Returns a figure for days converted to seconds. If there are
+        errors e.g. no parameter given or wrong type, it will try to
+        change any parameter to an int, and failing that will continue
+        with a default value of 120 days. Passing a negative value will
+        also revert to this default.
+
+        If you change the default here remember to also change it in
+        test.corpusbuilder.TestAgeCalcMethods()
+        """
     if type(my_int) != int:
         try:
             int(my_int)
@@ -118,15 +127,15 @@ def clean_logs():
 def pull_from_reddit():
     with open('logs/checked_reddit.txt', 'r') as f:
         checked = f.read().splitlines()
-        output = []
-        for sub in subs:
-            subreddit = reddit.subreddit(sub)
-            for submission in subreddit.hot(limit=50):
-                if submission.id not in checked:
-                    # check on ups not implemented as pulling from .hot
-                    # if submission.ups > somelimit
-                    output.append(submission.title)
-                    checked.append(submission.id)
+    output = []
+    for sub in subs:
+        subreddit = reddit.subreddit(sub)
+        for submission in subreddit.hot(limit=50):
+            if submission.id not in checked:
+                # check on ups not implemented as pulling from .hot
+                # if submission.ups > somelimit
+                output.append(submission.title)
+                checked.append(submission.id)
     if len(output) == 0:
         print('No new submissions found')
         logger.info('no new submissions found')
